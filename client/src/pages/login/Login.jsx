@@ -1,36 +1,69 @@
-import React, { useContext } from 'react'
-import "./login.scss"
-import { Link } from 'react-router-dom'
-import { AuthContext } from '../../context/authContext'
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/authContext";
+import "./login.scss";
 
 const Login = () => {
-  const {login}=useContext(AuthContext)
+  const [inputs, setInputs] = useState({
+    username: "",
+    password: "",
+  });
+  const [err, setErr] = useState(null);
 
-  const handleLogin=()=>{
-    login();
-  }
+  const navigate = useNavigate()
+
+  const handleChange = (e) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+  const { login } = useContext(AuthContext);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      await login(inputs);
+      navigate("/")
+    } catch (err) {
+      setErr(err.response.data);
+    }
+  };
+
   return (
-    <div className='login'>
-      <div className='card'>
-        <div className='left'>
-            <h1>Sociopedia.</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae modi velit distinctio voluptates, adipisci nihil provident nostrum ipsum eum ea harum officiis minima atque quaerat soluta. Aliquid consequatur nesciunt pariatur.</p>
-            <span>Don't have an account?</span>
-            <Link to="/register">
-                <button>Register</button>
-            </Link>
+    <div className="login">
+      <div className="card">
+        <div className="left">
+          <h1>Hello World.</h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero cum,
+            alias totam numquam ipsa exercitationem dignissimos, error nam,
+            consequatur.
+          </p>
+          <span>Don't you have an account?</span>
+          <Link to="/register">
+            <button>Register</button>
+          </Link>
         </div>
-        <div className='right'>
-            <h1>Login</h1>
-            <form>
-                <input type="text" placeholder='Username'/>
-                <input type="text" placeholder='Password'/>
-                <button onClick={handleLogin}>Login</button>
-            </form>
+        <div className="right">
+          <h1>Login</h1>
+          <form>
+            <input
+              type="text"
+              placeholder="Username"
+              name="username"
+              onChange={handleChange}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              name="password"
+              onChange={handleChange}
+            />
+            {err && err}
+            <button onClick={handleLogin}>Login</button>
+          </form>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
